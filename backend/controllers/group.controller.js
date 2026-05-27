@@ -5,7 +5,6 @@ const getAllGroups = async (req, res) => {
     try {
         const user = req.user;
         
-        // Fix: Properly await query first to get user document
         const userDoc = await userModel.findById(user._id);
         if (!userDoc) {
             return res.json({
@@ -17,7 +16,6 @@ const getAllGroups = async (req, res) => {
         const groups = userDoc.groups || [];
         const groupList = [];
         
-        // Fix: Use for...of to iterate over the array elements, not index strings
         for (let groupId of groups) {
             const groupData = await groupModel.findById(groupId);
             if (!groupData) continue; // Skip if group is deleted
@@ -25,10 +23,8 @@ const getAllGroups = async (req, res) => {
             let receiveableamount = 0;
             let payableamount = 0;
             
-            // Fix: Use for...of to iterate over members
             for (let member of groupData.members) {
                 if (member.upi === user.upi) {
-                    // Fix: Use for...of to iterate over balances
                     for (let bal of member.balances) {
                         if (bal.amount >= 0) {
                             receiveableamount += bal.amount;
@@ -85,7 +81,7 @@ const createGroup = async (req, res) => {
             }
             mem.push({
                 upi: memData.upi,
-                name: memData.name, // Use the database-verified name
+                name: memData.name, 
                 balances: [],
                 total: 0
             });
