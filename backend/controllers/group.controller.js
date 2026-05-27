@@ -195,9 +195,10 @@ const addMember = async (req, res) => {
             amount: 0
         }));
 
+
         const newMemberObj = {
             upi: memData.upi,
-            name: memData.name, 
+            name: newMember.name || memData.name, 
             balances: newUserBalances,
             total: 0
         };
