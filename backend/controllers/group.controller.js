@@ -102,7 +102,7 @@ const createGroup = async (req, res) => {
         
         const group = new groupModel({
             name: name,
-            createdBy: user.upi,
+            createdBy: user.name,
             code: code,
             members: mem
         });
