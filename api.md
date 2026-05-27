@@ -183,7 +183,7 @@
   "name": "User One",
   "groups": [
     {
-      "code": "GRP001",
+      "code": "123456",
       "name": "Friends Group"
     }
   ],
@@ -240,7 +240,7 @@
   "groups": [
     {
       "name": "Friends Group",
-      "createdBy": "65f8a2c4e1b2c3d4e5f6a7b8",
+      "createdBy": "Name",
       "receiveableamount": 150.00,
       "payableamount": 50.00,
       "totalMembers": 5,
@@ -304,7 +304,7 @@
 **Response:**
 ```json
 {
-  "code": "GRP001",
+  "code": "000001",
   "name": "Friends Group",
   "members": [
     {"upi": "user1@upi", "amount": 300},
@@ -323,7 +323,7 @@
 **Request Body:**
 ```json
 {
-  "groupId": "GRP001",
+  "groupId": "000001",
   "newMember": { "upi": "user4@upi", "name": "User Four"}
 }
 ```
@@ -349,7 +349,7 @@
 **Request Body:**
 ```json
 {
-  "groupId": "GRP001"
+  "groupId": "000001"
 }
 ```
 **Response:**```json
@@ -366,7 +366,7 @@
 **Request Body:**
 ```json
 {
-  "groupId": "GRP001"
+  "groupId": "000000"
 }
 ```
 **Response:**
@@ -386,7 +386,7 @@
 **Request Body:**
 ```json
 {
-  "groupId": "GRP001",
+  "groupId": "000001",
   "amount": 300,
   "desc": "Dinner",
   "splits": [
@@ -565,7 +565,7 @@
 **Request Body:**
 ```json
 {
-  "groupId": "GRP001",
+  "groupId": "000001",
   "memberToRemove": "user2@upi"
 }
 ```
@@ -590,7 +590,7 @@
 **Request Body:**
 ```json
 {
-  "groupId": "GRP001"
+  "groupId": "000001"
 }
 ```
 **Response:**```json
