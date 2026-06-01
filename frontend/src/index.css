@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand-red: #E51E25;
+  --color-brand-red-light: #FFF1F1;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  @apply bg-white text-gray-900;
+}
