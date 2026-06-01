@@ -1,11 +1,11 @@
 const groupModel = require("../models/group.model")
 const userModel = require("../models/user.model")
+const userController = require("./user.controller")
 
 const getAllGroups = async (req, res) => {
     try {
         const user = req.user;
-        
-        const userDoc = await userModel.findById(user._id);
+        const userDoc = await userModel.findOne({upi: user.upi});
         if (!userDoc) {
             return res.json({
                 status: false,
@@ -62,6 +62,10 @@ const createGroup = async (req, res) => {
     try {
         const user = req.user;
         const { name, members } = req.body;
+
+        if (members === undefined) {
+            members = [];
+        }
         
         // Generate unique 6-digit random code
         let code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -255,9 +259,76 @@ const getGroupInfo = async(req,res)=>{
     }
 }
 
+const joinGroup = async (req, res) => {
+    try {
+        const { groupId } = req.params; // This parameter holds the group code
+        const user = req.user; // Securely get the authenticated user from the auth middleware
+
+        // Find group by its code instead of ObjectId findById
+        const groupData = await groupModel.findOne({ code: groupId });
+        if (!groupData) {
+            return res.json({
+                status: false,
+                message: "Group not found"
+            });
+        }
+
+        // Check if the user is already in the group
+        const isAlreadyMember = groupData.members.some(member => member.upi === user.upi);
+        if (isAlreadyMember) {
+            return res.json({
+                status: false,
+                message: "User already in group"
+            });
+        }
+
+        // Pre-populate balances for the joining user (facing all existing group members)
+        const newUserBalances = groupData.members.map(m => ({
+            upi: m.upi,
+            name: m.name,
+            amount: 0
+        }));
+
+        const newMemberObj = {
+            upi: user.upi,
+            name: user.name,
+            balances: newUserBalances,
+            total: 0
+        };
+
+        // Update all existing members' balance arrays to track balances with the joining user
+        for (let m of groupData.members) {
+            m.balances.push({
+                upi: user.upi,
+                name: user.name,
+                amount: 0
+            });
+        }
+
+        // Push joining user to group list
+        groupData.members.push(newMemberObj);
+        await groupData.save();
+
+        // Add the group's _id to the joining user's groups reference list
+        await userModel.findOneAndUpdate({ upi: user.upi }, { $push: { groups: groupData._id } });
+
+        return res.json({
+            status: true,
+            message: "Joined group successfully"
+        });
+    } catch (error) {
+        return res.json({
+            status: false,
+            message: error.message
+        });
+    }
+}
+
+
 module.exports = {
     getAllGroups,
     createGroup,
     addMember,
-    getGroupInfo
+    getGroupInfo,
+    joinGroup
 }

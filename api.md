@@ -343,7 +343,7 @@
 ```
 
 ### Join a Group
-**Endpoint:** `POST /group/join`
+**Endpoint:** `POST /group/:groupId/join`
 **Headers:**
 ```Authorization: Bearer <jwt_token>```
 **Request Body:**
