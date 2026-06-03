@@ -435,6 +435,7 @@
   "groupId": "000001",
   "amount": 300,
   "desc": "Dinner",
+  "paidBy": "user1@upi",
   "splits": [
     {
       "to": "user2@upi",

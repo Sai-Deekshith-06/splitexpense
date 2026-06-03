@@ -9,7 +9,7 @@ const MemberRow = ({ member, updateMemberValue, toggleChecked, splitType }) => {
                     type="checkbox"
                     checked={member.checked}
                     onChange={() => {
-                        toggleChecked(member.id);
+                        toggleChecked(member.upi);
                     }}
                     className="w-5 h-5 accent-green-600"
                 />
@@ -39,7 +39,7 @@ const MemberRow = ({ member, updateMemberValue, toggleChecked, splitType }) => {
                             type="number"
                             value={member.value}
                             min={0}
-                            onChange={(e) => updateMemberValue(member.id, e.target.value)}
+                            onChange={(e) => updateMemberValue(member.upi, e.target.value)}
                             className="flex-1 h-full px-3 text-sm outline-none"
                         />
                     </div>

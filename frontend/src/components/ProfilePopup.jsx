@@ -42,7 +42,7 @@ export default function ProfilePopup({ onClose }) {
       {/* Avatar */}
       <div className="flex justify-center mb-5 relative">
         <img
-          src="https://i.pravatar.cc/120"
+          src={`https://robohash.org/${user?.name || 'user'}?set=set5`}
           alt="profile"
           className="w-24 h-24 rounded-full object-cover border"
         />

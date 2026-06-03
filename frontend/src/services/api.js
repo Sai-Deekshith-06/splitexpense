@@ -1,22 +1,24 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "/api";
 
 export async function apiFetch(endpoint, options = {}) {
     const token = localStorage.getItem("token");
-    const response = await fetch(
-        `${API_URL}${endpoint}`,
-        {
-            ...options,
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-                ...options.headers,
-            },
-        }
-    );
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "API request failed");
+    try {
+        const response = await fetch(
+            `${API_URL}${endpoint}`,
+            {
+                ...options,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    ...options.headers,
+                },
+            }
+        );
+        // console.log(response);
+        return response.json();
+    } catch (err) {
+        console.error("Network error:", err);
+        throw new Error("Network error. Please try again.");
     }
 
-    return response.json();
 }

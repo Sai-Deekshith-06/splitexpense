@@ -13,28 +13,21 @@ import {
     Users,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { apiFetch } from '../../services/api'
 
 import MemberRow from "./components/MemberRow";
 import SplitTabs from "./components/SplitTabs";
 import TotalsFooter from "./components/TotalsFooter";
 import SearchableSelect from "./components/SearchableSelect";
 
-const membersData = [
-    { id: 1, name: "Rohan", avatar: "👦" },
-    { id: 2, name: "Priya", avatar: "👩" },
-    { id: 3, name: "Amit", avatar: "👨" },
-    { id: 4, name: "Neha", avatar: "👧" },
-    { id: 5, name: "Suresh", avatar: "🧑" },
-];
-
-const SplitExpense = ({ setSplitPanelActive }) => {
+const SplitExpense = ({ setSplitPanelActive, membersData, grpcode }) => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [description, setDescription] = useState("");
-    const [paidBy, setPaidBy] = useState("");
+    const [paidBy, setPaidBy] = useState({ name: "", upi: "" });
     const [splitType, setSplitType] = useState("amount");
 
     const [members, setMembers] = useState(
-        membersData.map((member) => ({ ...member, value: 0, checked: true }))
+        membersData.map((member) => ({ ...member, value: 0, checked: true, calculatedAmount: 0 }))
     );
 
     const assignedAmount = useMemo(() => {
@@ -58,12 +51,12 @@ const SplitExpense = ({ setSplitPanelActive }) => {
 
     const remainingAmount = Number(totalAmount) - Number(assignedAmount);
 
-    const updateMemberValue = (id, value) => {
+    const updateMemberValue = (upi, value) => {
         const numericValue = value === "" ? 0 : Number(value);
 
         setMembers((prev) => {
             const updatedMembers = prev.map((member) =>
-                member.id === id
+                member.upi === upi
                     ? {
                         ...member,
                         value: numericValue,
@@ -116,15 +109,17 @@ const SplitExpense = ({ setSplitPanelActive }) => {
             );
 
             if (!activeMembers.length) return prev;
+            const equalAmount =
+                totalAmount / activeMembers.length;
 
             // AMOUNT
             if (splitType === "amount") {
-                const equalAmount =
-                    totalAmount / activeMembers.length;
-
                 return prev.map((member) => ({
                     ...member,
                     value: member.checked
+                        ? Number(equalAmount.toFixed(0))
+                        : 0,
+                    calculatedAmount: member.checked
                         ? Number(equalAmount.toFixed(0))
                         : 0,
                 }));
@@ -135,6 +130,9 @@ const SplitExpense = ({ setSplitPanelActive }) => {
                 return prev.map((member) => ({
                     ...member,
                     value: member.checked ? 1 : 0,
+                    calculatedAmount: member.checked
+                        ? Number(equalAmount.toFixed(0))
+                        : 0,
                 }));
             }
 
@@ -147,6 +145,9 @@ const SplitExpense = ({ setSplitPanelActive }) => {
                     ...member,
                     value: member.checked
                         ? Number(equalPercent.toFixed(0))
+                        : 0,
+                    calculatedAmount: member.checked
+                        ? Number(equalAmount.toFixed(0))
                         : 0,
                 }));
             }
@@ -174,16 +175,38 @@ const SplitExpense = ({ setSplitPanelActive }) => {
         }
     };
 
-    const toggleMemberChecked = (id) => {
-        setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, checked: !m.checked } : m)));
+    const toggleMemberChecked = (upi) => {
+        setMembers((prev) => prev.map((m) => (m.upi === upi ? { ...m, checked: !m.checked } : m)));
     };
 
-    const handleOnDone = () => {
+    const handleOnDone = async () => {
         if (remainingAmount !== 0 || assignedAmount !== totalAmount) {
             toast.error("Invalid split amounts");
         }
-        toast.success("Expense added successfully");
-        setSplitPanelActive(false);
+        const expenseData = {
+            "groupId": grpcode,
+            "amount": totalAmount,
+            "desc": description,
+            "paidBy": paidBy.upi,
+            "splits": members.filter(m => m.checked).map(m => ({
+                upi: m.upi,
+                value: m.calculatedAmount
+            }))
+        };
+        // console.log(expenseData);
+        // console.log(members);
+        try {
+            const response = await apiFetch("/group/txn/add", "POST", expenseData, true);
+            if (!response.status) {
+                toast.error(response.message || "Error adding expense");
+                return;
+            }
+            toast.success("Expense added successfully");
+            setSplitPanelActive(false);
+        } catch (error) {
+            console.log(error);
+            toast.error("Error adding expense");
+        }
     };
 
     return (
@@ -253,17 +276,17 @@ const SplitExpense = ({ setSplitPanelActive }) => {
                     <SearchableSelect members={members} paidBy={paidBy} setPaidBy={setPaidBy} />
 
                     {/* PAID INFO */}
-                    {paidBy && totalAmount > 0 && (
+                    {paidBy.name !== "" && paidBy.upi !== "" && totalAmount > 0 && (
                         <div className="mt-6 bg-green-50 border border-green-100 rounded-xl p-3 flex items-center gap-3">
                             <ShieldCheck className="text-green-600" size={22} />
-                            <p className="text-green-800 font-medium text-sm">₹{totalAmount} will be added as paid by {paidBy}</p>
+                            <p className="text-green-800 font-medium text-sm">₹{totalAmount} will be added as paid by {paidBy.name} ({paidBy.upi})</p>
                         </div>
                     )}
                 </div>
 
                 {/* RIGHT SIDE */}
                 <div className="border-l border-gray-200 pl-8">
-                    {paidBy && totalAmount > 0 && (
+                    {paidBy.name !== "" && paidBy.upi !== "" && totalAmount > 0 && (
                         <>
                             <SplitTabs splitType={splitType} setSplitType={setSplitType} />
                             <div>
@@ -296,7 +319,7 @@ const SplitExpense = ({ setSplitPanelActive }) => {
                             {/* MEMBERS */}
                             <div className="mt-6 flex flex-col">
                                 {members.map((member) => (
-                                    <MemberRow key={member.id} member={member} updateMemberValue={updateMemberValue} toggleChecked={toggleMemberChecked} splitType={splitType} />
+                                    <MemberRow key={member.upi} member={member} updateMemberValue={updateMemberValue} toggleChecked={toggleMemberChecked} splitType={splitType} />
                                 ))}
 
                                 <button className="mt-4 h-10 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center gap-2 text-purple-700 font-semibold text-sm hover:bg-purple-50">
@@ -309,7 +332,12 @@ const SplitExpense = ({ setSplitPanelActive }) => {
                 </div>
             </div>
 
-            <TotalsFooter totalAmount={totalAmount} assignedAmount={assignedAmount} remainingAmount={remainingAmount} onSplitEqually={splitEqually} onDone={handleOnDone} />
+            <TotalsFooter
+                totalAmount={totalAmount}
+                assignedAmount={assignedAmount}
+                remainingAmount={remainingAmount}
+                onSplitEqually={splitEqually}
+                onDone={handleOnDone} />
         </div>
     );
 };

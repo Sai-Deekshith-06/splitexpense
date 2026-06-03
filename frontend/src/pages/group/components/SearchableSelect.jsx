@@ -71,12 +71,12 @@ export default function SearchableSelect({
                 {!open ? (
                     <span
                         className={
-                            paidBy
+                            paidBy.name !== "" && paidBy.upi !== ""
                                 ? "text-gray-900"
                                 : "text-gray-400"
                         }
                     >
-                        {paidBy || "Select Member"}
+                        {paidBy.name || "Select Member"}
                     </span>
                 ) : (
                     <div className="flex items-center gap-2 w-full">
@@ -112,10 +112,10 @@ export default function SearchableSelect({
                     <div className="max-h-60 overflow-y-auto p-2">
                         {filteredMembers.map((member) => (
                             <button
-                                key={member.id}
+                                key={member.upi}
                                 type="button"
                                 onClick={() => {
-                                    setPaidBy(member.name);
+                                    setPaidBy({ name: member.name, upi: member.upi });
                                     setOpen(false);
                                     setSearch("");
                                 }}

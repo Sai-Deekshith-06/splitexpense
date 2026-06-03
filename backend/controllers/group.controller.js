@@ -5,24 +5,24 @@ const userController = require("./user.controller")
 const getAllGroups = async (req, res) => {
     try {
         const user = req.user;
-        const userDoc = await userModel.findOne({upi: user.upi});
+        const userDoc = await userModel.findOne({ upi: user.upi });
         if (!userDoc) {
             return res.json({
                 status: false,
                 message: "User not found"
             });
         }
-        
+
         const groups = userDoc.groups || [];
         const groupList = [];
-        
+
         for (let groupId of groups) {
             const groupData = await groupModel.findById(groupId);
             if (!groupData) continue; // Skip if group is deleted
-            
+
             let receiveableamount = 0;
             let payableamount = 0;
-            
+
             for (let member of groupData.members) {
                 if (member.upi === user.upi) {
                     for (let bal of member.balances) {
@@ -35,7 +35,7 @@ const getAllGroups = async (req, res) => {
                     break;
                 }
             }
-            
+
             groupList.push({
                 name: groupData.name,
                 createdBy: groupData.createdBy,
@@ -45,7 +45,7 @@ const getAllGroups = async (req, res) => {
                 groupCode: groupData.code
             });
         }
-        
+
         return res.json({
             groups: groupList,
             status: true
@@ -66,15 +66,15 @@ const createGroup = async (req, res) => {
         if (members === undefined) {
             members = [];
         }
-        
+
         // Generate unique 6-digit random code
         let code = Math.floor(100000 + Math.random() * 900000).toString();
         while (await groupModel.findOne({ code })) {
             code = Math.floor(100000 + Math.random() * 900000).toString();
         }
-        
+
         let mem = [];
-        
+
         for (let member of members) {
             const memData = await userModel.findOne({ upi: member.upi });
             if (!memData) {
@@ -85,12 +85,12 @@ const createGroup = async (req, res) => {
             }
             mem.push({
                 upi: memData.upi,
-                name: member.name.trim() || memData.name, 
+                name: member?.name?.trim() || memData.name,
                 balances: [],
                 total: 0
             });
         }
-        
+
         // Add creator to the members array
         mem.push({
             upi: user.upi,
@@ -111,14 +111,14 @@ const createGroup = async (req, res) => {
                 }
             }
         }
-        
+
         const group = new groupModel({
             name: name,
             createdBy: user.name,
             code: code,
             members: mem
         });
-        
+
         const response = await group.save();
         if (!response) {
             return res.json({
@@ -126,10 +126,10 @@ const createGroup = async (req, res) => {
                 message: "Group not created"
             });
         }
-        
+
         // Update creator
         await userModel.findOneAndUpdate({ upi: user.upi }, { $push: { groups: response._id } });
-        
+
         // Update other members
         for (let member of members) {
             await userModel.findOneAndUpdate(
@@ -137,7 +137,7 @@ const createGroup = async (req, res) => {
                 { $push: { groups: response._id } }
             );
         }
-        
+
         return res.json({
             status: true,
             message: "Group created successfully",
@@ -155,9 +155,9 @@ const createGroup = async (req, res) => {
 
 const addMember = async (req, res) => {
     try {
-        const { groupId } = req.params; 
-        const { newMember } = req.body; 
-        
+        const { groupId } = req.params;
+        const { newMember } = req.body;
+
         // Find group by its code instead of ObjectId findById
         const groupData = await groupModel.findOne({ code: groupId });
         if (!groupData) {
@@ -202,7 +202,7 @@ const addMember = async (req, res) => {
 
         const newMemberObj = {
             upi: memData.upi,
-            name: newMember.name.trim() || memData.name, 
+            name: newMember.name.trim() || memData.name,
             balances: newUserBalances,
             total: 0
         };
@@ -236,11 +236,11 @@ const addMember = async (req, res) => {
     }
 }
 
-const getGroupInfo = async(req,res)=>{
-    try{
-        const {groupId} = req.params;
-        const groupData = await groupModel.findOne({code:groupId});
-        if(!groupData){
+const getGroupInfo = async (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const groupData = await groupModel.findOne({ code: groupId });
+        if (!groupData) {
             return res.json({
                 status: false,
                 message: "Group not found"
@@ -251,7 +251,7 @@ const getGroupInfo = async(req,res)=>{
             group: groupData
         });
     }
-    catch(error){
+    catch (error) {
         return res.json({
             status: false,
             message: error.message

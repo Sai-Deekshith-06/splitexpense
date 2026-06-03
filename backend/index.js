@@ -5,7 +5,42 @@ require("dotenv").config();
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+const allowedOrigins = [
+    /^https:\/\/[a-z0-9-]+-5173\.inc1\.devtunnels\.ms$/,
+    /^https:\/\/[a-z0-9-]+-3000\.inc1\.devtunnels\.ms$/,
+    "http://localhost:5173",
+    "http://localhost:3000"
+];
+
+const corsOptions = {
+    origin(origin, callback) {
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        const isAllowed = allowedOrigins.some((allowedOrigin) => {
+            if (allowedOrigin instanceof RegExp) {
+                return allowedOrigin.test(origin);
+            }
+
+            return allowedOrigin === origin;
+        });
+
+        return isAllowed
+            ? callback(null, true)
+            : callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true
+};
+
+app.use(cors({
+    origin: [
+        "https://j4d5bzxn-5173.inc1.devtunnels.ms",
+        "http://localhost:3000"
+    ],
+    credentials: true
+}));
+app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

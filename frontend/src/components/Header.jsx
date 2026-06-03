@@ -33,7 +33,7 @@ const Header = () => {
             className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-3 py-2 rounded-lg transition"
           >
             <img
-              src="https://i.pravatar.cc/40"
+              src={`https://robohash.org/${user?.name || 'user'}?set=set5`}
               alt="User"
               className="w-10 h-10 rounded-full object-cover border"
             />
