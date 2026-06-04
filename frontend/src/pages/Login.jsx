@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { apiFetch } from "../services/api";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import {
   Lock,
   Phone,

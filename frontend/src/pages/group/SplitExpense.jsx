@@ -12,7 +12,7 @@ import {
     ShieldCheck,
     Users,
 } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { apiFetch } from '../../services/api'
 
 import MemberRow from "./components/MemberRow";

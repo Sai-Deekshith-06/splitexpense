@@ -5,7 +5,7 @@ import { Spline } from 'lucide-react'
 import SplitExpense from './SplitExpense'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { apiFetch } from '../../services/api'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 import { useAuth } from '../../context/AuthContext'
 
 function Dashboard() {
