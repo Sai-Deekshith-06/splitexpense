@@ -14,13 +14,14 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { apiFetch } from '../../services/api'
+import { Skeleton } from 'boneyard-js/react'
 
 import MemberRow from "./components/MemberRow";
 import SplitTabs from "./components/SplitTabs";
 import TotalsFooter from "./components/TotalsFooter";
 import SearchableSelect from "./components/SearchableSelect";
 
-const SplitExpense = ({ setSplitPanelActive, membersData, grpcode }) => {
+const SplitExpense = ({ setSplitPanelActive, membersData, grpcode, loading }) => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [description, setDescription] = useState("");
     const [paidBy, setPaidBy] = useState({ name: "", upi: "" });
@@ -273,7 +274,7 @@ const SplitExpense = ({ setSplitPanelActive, membersData, grpcode }) => {
                     </div>
 
                     {/* Paid By */}
-                    <SearchableSelect members={members} paidBy={paidBy} setPaidBy={setPaidBy} />
+                    <SearchableSelect members={members} paidBy={paidBy} setPaidBy={setPaidBy} loading={loading} />
 
                     {/* PAID INFO */}
                     {paidBy.name !== "" && paidBy.upi !== "" && totalAmount > 0 && (
@@ -309,17 +310,18 @@ const SplitExpense = ({ setSplitPanelActive, membersData, grpcode }) => {
                                     <span className="">
                                         Assigned Amount
                                     </span>
-
-                                    <span className="font-semibold">
-                                        ₹{assignedAmount}
-                                    </span>
+                                    <Skeleton name="split-expense-assigned-amount" loading={loading}>
+                                        <span className="font-semibold">
+                                            ₹{assignedAmount}
+                                        </span>
+                                    </Skeleton>
                                 </div>
                             </div>
 
                             {/* MEMBERS */}
                             <div className="mt-6 flex flex-col">
                                 {members.map((member) => (
-                                    <MemberRow key={member.upi} member={member} updateMemberValue={updateMemberValue} toggleChecked={toggleMemberChecked} splitType={splitType} />
+                                    <MemberRow key={member.upi} member={member} updateMemberValue={updateMemberValue} toggleChecked={toggleMemberChecked} splitType={splitType} loading={loading} />
                                 ))}
 
                                 <button className="mt-4 h-10 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center gap-2 text-purple-700 font-semibold text-sm hover:bg-purple-50">

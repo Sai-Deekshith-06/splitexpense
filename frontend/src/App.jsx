@@ -7,6 +7,7 @@ import Dashboard from "./pages/group/Dashboard";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./route/ProtectedRoute";
 import PublicRoute from "./route/PublicRoute";
+import _Dashboard from "./skeletons/Dashboard";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/me" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/_" element={<_Dashboard />} />
             </Route>
           </Route>
         </Routes>

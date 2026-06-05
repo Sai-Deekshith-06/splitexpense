@@ -4,6 +4,7 @@ import {
     Plus,
     Send,
 } from "lucide-react";
+import { Skeleton } from 'boneyard-js/react'
 
 const members = [
     {
@@ -69,7 +70,7 @@ function generateColor(str) {
     return color;
 }
 
-function RightPanel({ userData, grpname }) {
+function RightPanel({ userData, grpname, loading }) {
     console.log(userData);
 
     return (
@@ -77,9 +78,11 @@ function RightPanel({ userData, grpname }) {
             <div className="flex items-center justify-between gap-4 border-b border-gray-200 pb-4">
                 <div>
                     <h2 className="text-xl font-semibold text-gray-900">Members</h2>
-                    <p className="mt-1 text-xs text-gray-500">
-                        Balance overview for the {grpname} group
-                    </p>
+                    <Skeleton name="right-panel-balance-overview" loading={loading}>
+                        <p className="mt-1 text-xs text-gray-500">
+                            Balance overview for the {grpname} group
+                        </p>
+                    </Skeleton>
                 </div>
 
                 <div className="flex items-center gap-6">
@@ -87,65 +90,69 @@ function RightPanel({ userData, grpname }) {
                         Total Balance
                     </span>
 
-                    <span className={`text-lg font-bold ${userData?.total >= 0 ? "text-green-500" : "text-red-500"}`}>
-                        ₹{userData?.total || 0}
-                    </span>
+                    <Skeleton name="right-panel-total-balance" loading={loading}>
+                        <span className={`text-lg font-bold ${userData?.total >= 0 ? "text-green-500" : "text-red-500"}`}>
+                            ₹{userData?.total || 0}
+                        </span>
+                    </Skeleton>
                 </div>
             </div>
-            <div className="mt-2 flex flex-col">
-                <div className="pr-1">
-                    {userData?.balances?.map((member, index) => (
-                        <div
-                            key={member.upi}
-                            className={`flex items-center gap-3 border-b border-gray-200 py-4 last:border-b-0 ${index === 0 ? "pt-5" : ""}`}
-                        >
+            <Skeleton name="right-panel-members-list" loading={loading}>
+                <div className="mt-2 flex flex-col">
+                    <div className="pr-1">
+                        {userData?.balances?.map((member, index) => (
                             <div
-                                className={`flex h-12 w-12 items-center justify-center rounded-full text-base font-semibold`}
-                                style={{
-                                    backgroundColor: generateColor(member.upi),
-                                    color: generateColor(member.upi).toLowerCase() === '#ffffff' ? '#000' : '#fff'
-                                }}
+                                key={member.upi}
+                                className={`flex items-center gap-3 border-b border-gray-200 py-4 last:border-b-0 ${index === 0 ? "pt-5" : ""}`}
                             >
-                                {member.name.charAt(0).toUpperCase()}
-                            </div>
-
-                            <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-2">
-                                    <h3 className="truncate text-base font-semibold text-gray-900">{member.name}</h3>
-                                    {member.role ? (
-                                        <span className="text-xs text-gray-400">({member.role})</span>
-                                    ) : null}
+                                <div
+                                    className={`flex h-12 w-12 items-center justify-center rounded-full text-base font-semibold`}
+                                    style={{
+                                        backgroundColor: generateColor(member.upi),
+                                        color: generateColor(member.upi).toLowerCase() === '#ffffff' ? '#000' : '#fff'
+                                    }}
+                                >
+                                    {member.name.charAt(0).toUpperCase()}
                                 </div>
+
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="truncate text-base font-semibold text-gray-900">{member.name}</h3>
+                                        {member.role ? (
+                                            <span className="text-xs text-gray-400">({member.role})</span>
+                                        ) : null}
+                                    </div>
+                                </div>
+
+                                {member.amount > 0 && (
+                                    <>
+                                        <div className={`hidden md:flex w-28 justify-center text-xs font-semibold shrink-0 ${member.amount >= 0 ? "text-green-600" : "text-red-500"}`}>
+                                            "To " + {member.amount > 0 ? "pay" : "receive"}
+                                        </div>
+
+                                        <div className={`w-20 text-right text-base font-semibold shrink-0 ${member.amount >= 0 ? "text-green-600" : "text-red-500"}`}>
+                                            {`₹${Math.abs(member.amount)}`}
+                                        </div>
+
+                                        <button className={`ml-1 rounded-xl border px-4 py-2 text-xs font-semibold transition ${member.amount >= 0 ? "border-green-500 text-green-600 hover:bg-green-50" : "border-red-500 text-red-500 hover:bg-red-50"}`}>
+                                            {member.amount > 0 ? "Request" : "Pay Now"}
+                                        </button>
+                                    </>)}
+                            </div>
+                        ))}
+                        <div className="flex items-center gap-3 border-b border-gray-200 py-4" >
+                            <div className={`flex h-12 w-12 items-center justify-center rounded-full text-base font-semibold border border-gray-300`}>
+                                <Link2 size={16} />
                             </div>
 
-                            {member.amount > 0 && (
-                                <>
-                                    <div className={`hidden md:flex w-28 justify-center text-xs font-semibold shrink-0 ${member.amount >= 0 ? "text-green-600" : "text-red-500"}`}>
-                                        "To " + {member.amount > 0 ? "pay" : "receive"}
-                                    </div>
-
-                                    <div className={`w-20 text-right text-base font-semibold shrink-0 ${member.amount >= 0 ? "text-green-600" : "text-red-500"}`}>
-                                        {`₹${Math.abs(member.amount)}`}
-                                    </div>
-
-                                    <button className={`ml-1 rounded-xl border px-4 py-2 text-xs font-semibold transition ${member.amount >= 0 ? "border-green-500 text-green-600 hover:bg-green-50" : "border-red-500 text-red-500 hover:bg-red-50"}`}>
-                                        {member.amount > 0 ? "Request" : "Pay Now"}
-                                    </button>
-                                </>)}
-                        </div>
-                    ))}
-                    <div className="flex items-center gap-3 border-b border-gray-200 py-4" >
-                        <div className={`flex h-12 w-12 items-center justify-center rounded-full text-base font-semibold border border-gray-300`}>
-                            <Link2 size={16} />
-                        </div>
-
-                        <div className="min-w-0 flex-1 flex-col items-center">
-                            <p className="truncate text-base font-semibold text-gray-900">Invite Member</p>
-                            <small className="text-xs text-gray-500">Share invite link or add a new member</small>
+                            <div className="min-w-0 flex-1 flex-col items-center">
+                                <p className="truncate text-base font-semibold text-gray-900">Invite Member</p>
+                                <small className="text-xs text-gray-500">Share invite link or add a new member</small>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </Skeleton>
         </section>
     );
 }

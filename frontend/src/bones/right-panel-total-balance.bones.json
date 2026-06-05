@@ -1,0 +1,95 @@
+{
+  "breakpoints": {
+    "375": {
+      "name": "right-panel-total-balance",
+      "viewportWidth": 52,
+      "width": 52,
+      "height": 28,
+      "bones": [
+        [
+          0,
+          2,
+          100,
+          24,
+          8
+        ]
+      ]
+    },
+    "640": {
+      "name": "right-panel-total-balance",
+      "viewportWidth": 52,
+      "width": 52,
+      "height": 28,
+      "bones": [
+        [
+          0,
+          2,
+          100,
+          24,
+          8
+        ]
+      ]
+    },
+    "768": {
+      "name": "right-panel-total-balance",
+      "viewportWidth": 52,
+      "width": 52,
+      "height": 28,
+      "bones": [
+        [
+          0,
+          2,
+          100,
+          24,
+          8
+        ]
+      ]
+    },
+    "1024": {
+      "name": "right-panel-total-balance",
+      "viewportWidth": 52,
+      "width": 52,
+      "height": 28,
+      "bones": [
+        [
+          0,
+          2,
+          100,
+          24,
+          8
+        ]
+      ]
+    },
+    "1280": {
+      "name": "right-panel-total-balance",
+      "viewportWidth": 52,
+      "width": 52,
+      "height": 28,
+      "bones": [
+        [
+          0,
+          2,
+          100,
+          24,
+          8
+        ]
+      ]
+    },
+    "1536": {
+      "name": "right-panel-total-balance",
+      "viewportWidth": 52,
+      "width": 52,
+      "height": 28,
+      "bones": [
+        [
+          0,
+          2,
+          100,
+          24,
+          8
+        ]
+      ]
+    }
+  },
+  "_hash": "5af8588ac93736997b62dbfe349db15e"
+}

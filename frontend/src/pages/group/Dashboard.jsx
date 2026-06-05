@@ -7,6 +7,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { apiFetch } from '../../services/api'
 import { toast } from 'sonner'
 import { useAuth } from '../../context/AuthContext'
+import { Skeleton } from 'boneyard-js/react'
 
 function Dashboard() {
     const [splitPanelActive, setSplitPanelActive] = useState(false);
@@ -31,7 +32,6 @@ function Dashboard() {
                     const mems = grp?.members?.map(m => ({ upi: m.upi, name: m.name })) || [];
                     setMembers(mems);
                     console.log(mems);
-                    setLoading(false);
                 } else {
                     toast.error(response.message);
                     navigate("/me");
@@ -40,6 +40,8 @@ function Dashboard() {
                 console.error("Error fetching group data:", error);
                 toast.error("Error fetching group data");
                 navigate("/me");
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -50,24 +52,25 @@ function Dashboard() {
             navigate("/me");
         }
     }, [groupId, user, navigate]);
-    return loading ? (
-        <div className="flex flex-col gap-2 xl:flex-row xl:items-stretch xl:min-h-screen">Loading...</div>
-    ) : (
+    return (
         <div className="flex flex-col gap-2 xl:flex-row xl:items-stretch xl:min-h-screen">
             <LeftPanel
                 setSplitPanelActive={setSplitPanelActive}
                 grpname={groupData?.name}
                 grpcode={groupData?.code}
                 members={groupData?.members?.length || 1}
+                loading={loading}
             />
             {!splitPanelActive && <RightPanel
                 grpname={groupData?.name}
                 userData={userData}
+                loading={loading}
             />}
             {splitPanelActive && <SplitExpense
                 setSplitPanelActive={setSplitPanelActive}
                 membersData={members}
                 grpcode={groupData?.code}
+                loading={loading}
             />}
         </div>
     )

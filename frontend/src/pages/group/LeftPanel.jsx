@@ -7,6 +7,7 @@ import {
     ArrowRightLeft,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Skeleton } from 'boneyard-js/react'
 
 const expenses = [
     {
@@ -62,7 +63,7 @@ const expenses = [
     },
 ];
 
-const LeftPanel = ({ setSplitPanelActive, grpname, grpcode, members }) => {
+const LeftPanel = ({ setSplitPanelActive, grpname, grpcode, members, loading }) => {
     return (
         <aside className="w-full xl:w-80 xl:shrink-0 h-full min-h-0 self-stretch bg-white border border-gray-200 rounded-2xl shadow-[0_14px_36px_rgba(15,23,42,0.08)] p-4 flex flex-col overflow-hidden">
 
@@ -160,76 +161,78 @@ const LeftPanel = ({ setSplitPanelActive, grpname, grpcode, members }) => {
             </button>
 
             {/* Expense List */}
-            <div className="flex flex-col gap-2.5 flex-1 min-h-0 overflow-y-auto pr-1 overflow-x-hidden max-h-100 last:pb-0.5">
-                {expenses.map((expense, index) => (
-                    <div
-                        key={index}
-                        // add hover effect to change border color to red-300 and bg to red-50 if expense is active or unsettled
-                        className={`rounded-xl border p-3.5 flex items-center justify-between transition shadow-sm hover:shadow-lg cursor-pointer last:mb-2
+            <Skeleton loading={loading} name="expense-list">
+                <div className="flex flex-col gap-2.5 flex-1 min-h-0 overflow-y-auto pr-1 overflow-x-hidden max-h-100 last:pb-0.5">
+                    {expenses.map((expense, index) => (
+                        <div
+                            key={index}
+                            // add hover effect to change border color to red-300 and bg to red-50 if expense is active or unsettled
+                            className={`rounded-xl border p-3.5 flex items-center justify-between transition shadow-sm hover:shadow-lg cursor-pointer last:mb-2
                             ${expense.active
-                                ? "border-red-200 bg-red-50/40"
-                                : "border-gray-200 bg-white"
-                            }`
-                        }
-                    >
+                                    ? "border-red-200 bg-red-50/40"
+                                    : "border-gray-200 bg-white"
+                                }`
+                            }
+                        >
 
-                        {/* Left */}
-                        <div className="flex items-center gap-3 min-w-0">
+                            {/* Left */}
+                            <div className="flex items-center gap-3 min-w-0">
 
-                            {/* Date Box */}
-                            <div className="w-14 h-14 rounded-xl border border-gray-200 bg-gray-50 flex flex-col items-center justify-center shrink-0">
-                                <span className="text-xl font-semibold text-gray-800 leading-none">
-                                    {expense.date}
-                                </span>
+                                {/* Date Box */}
+                                <div className="w-14 h-14 rounded-xl border border-gray-200 bg-gray-50 flex flex-col items-center justify-center shrink-0">
+                                    <span className="text-xl font-semibold text-gray-800 leading-none">
+                                        {expense.date}
+                                    </span>
 
-                                <span className="text-[11px] text-gray-500 mt-0.5">
-                                    {expense.month}
-                                </span>
+                                    <span className="text-[11px] text-gray-500 mt-0.5">
+                                        {expense.month}
+                                    </span>
+                                </div>
+
+                                {/* Expense Details */}
+                                <div className="min-w-0">
+                                    <h4 className="truncate font-semibold text-base text-gray-900">
+                                        {expense.title}
+                                    </h4>
+
+                                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                        {expense.paidBy} paid {expense.amount}
+                                    </p>
+                                </div>
                             </div>
 
-                            {/* Expense Details */}
-                            <div className="min-w-0">
-                                <h4 className="truncate font-semibold text-base text-gray-900">
-                                    {expense.title}
-                                </h4>
+                            {/* Right */}
+                            <div className="flex flex-col items-end gap-1.5 shrink-0">
 
-                                <p className="text-xs text-gray-500 mt-0.5 truncate">
-                                    {expense.paidBy} paid {expense.amount}
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Right */}
-                        <div className="flex flex-col items-end gap-1.5 shrink-0">
-
-                            <span
-                                className={`font-bold text-lg ${expense.unsettled
-                                    ? "text-red-500"
-                                    : expense.settled
-                                        ? "text-blue-500"
-                                        : expense.active
-                                            ? "text-red-500"
-                                            : "text-gray-700"
-                                    }`}
-                            >
-                                {expense.amount}
-                            </span>
-
-                            {expense.status && (
                                 <span
-                                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium border
-                    ${expense.unsettled
-                                            ? "border-red-300 text-red-500 bg-red-50"
-                                            : "border-blue-300 text-blue-500 bg-blue-50"
+                                    className={`font-bold text-lg ${expense.unsettled
+                                        ? "text-red-500"
+                                        : expense.settled
+                                            ? "text-blue-500"
+                                            : expense.active
+                                                ? "text-red-500"
+                                                : "text-gray-700"
                                         }`}
                                 >
-                                    {expense.status}
+                                    {expense.amount}
                                 </span>
-                            )}
+
+                                {expense.status && (
+                                    <span
+                                        className={`px-2.5 py-1 rounded-md text-[11px] font-medium border
+                    ${expense.unsettled
+                                                ? "border-red-300 text-red-500 bg-red-50"
+                                                : "border-blue-300 text-blue-500 bg-blue-50"
+                                            }`}
+                                    >
+                                        {expense.status}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            </Skeleton>
         </aside >
     );
 };

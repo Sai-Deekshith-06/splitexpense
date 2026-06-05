@@ -12,3 +12,15 @@ To get started,
 To run the app,
 - Frontend: `cd frontend && npm run dev`
 - Backend: `cd backend && npm start`
+
+To build skeletons:
+1. Install `npx playwright install chromium` and `npm install boneyard-js` in `/frontend`
+2. Wrap the components with the 
+```javascript
+import { Skeleton } from 'boneyard-js/react'
+<Skeleton name="profile-image" loading={false}></Skeleton>
+```
+    - `false` in build phase.
+3. Build using `npx boneyard-js build [url]`
+4. Import `import './bones/registry'` in `main.jsx` after the skeletons are build.
+5. Change the loading states.

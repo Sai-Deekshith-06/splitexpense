@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/AuthContext.jsx';
+import './bones/registry'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
