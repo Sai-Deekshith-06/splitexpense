@@ -52,22 +52,65 @@ function Dashboard() {
             navigate("/me");
         }
     }, [groupId, user, navigate]);
+    const updateSplitPanelActive = (status) => {
+        setSplitPanelActive(status);
+        if (status) {
+            setTimeout(() => {
+                const element = document.getElementById("add-expense");
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
+            }, 100);
+        }
+    };
     return (
         <div className="flex flex-col gap-2 xl:flex-row xl:items-stretch xl:min-h-screen">
-            <LeftPanel
-                setSplitPanelActive={setSplitPanelActive}
-                grpname={groupData?.name}
-                grpcode={groupData?.code}
-                members={groupData?.members?.length || 1}
-                loading={loading}
-            />
+            <div className='hidden xl:block'>
+                <LeftPanel
+                    setSplitPanelActive={(status) => {
+                        setSplitPanelActive(status);
+                        if (status)
+                            setTimeout(() => {
+                                const totalAmountEl = document.getElementById("totalAmount");
+                                if (totalAmountEl) {
+                                    totalAmountEl.focus();
+                                }
+                            }, 100);
+                    }}
+                    grpname={groupData?.name}
+                    grpcode={groupData?.code}
+                    members={groupData?.members?.length || 1}
+                    loading={loading}
+                />
+            </div>
+            <div className='xl:hidden'>
+                <LeftPanel
+                    setSplitPanelActive={(status) => {
+                        updateSplitPanelActive(status);
+                        if (status)
+                            setTimeout(() => {
+                                const totalAmountEl = document.getElementById("totalAmount");
+                                if (totalAmountEl) {
+                                    totalAmountEl.focus();
+                                }
+                            }, 100);
+                    }}
+                    grpname={groupData?.name}
+                    grpcode={groupData?.code}
+                    members={groupData?.members?.length || 1}
+                    loading={loading}
+                />
+            </div>
             {!splitPanelActive && <RightPanel
                 grpname={groupData?.name}
                 userData={userData}
                 loading={loading}
             />}
             {splitPanelActive && <SplitExpense
-                setSplitPanelActive={setSplitPanelActive}
+                setSplitPanelActive={updateSplitPanelActive}
                 membersData={members}
                 grpcode={groupData?.code}
                 loading={loading}

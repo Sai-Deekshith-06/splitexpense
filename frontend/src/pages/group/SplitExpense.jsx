@@ -239,7 +239,7 @@ const SplitExpense = ({ setSplitPanelActive, membersData, grpcode, loading }) =>
             </div>
 
             {/* MAIN */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 flex-1" id="add-expense">
                 {/* LEFT SIDE */}
                 <div>
                     {/* Total Amount */}
