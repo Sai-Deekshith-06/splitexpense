@@ -58,6 +58,16 @@ export default function CreateGroupModal({ show, onClose, onSuccess }) {
 
     const validMembers = members.filter((m) => m.upi.trim());
 
+    const selfAdded = validMembers.some(
+      (m) => m.upi.trim().toLowerCase() === user?.upi?.trim().toLowerCase(),
+    );
+
+    if (selfAdded) {
+      toast.error(
+        "Don't enter your own UPI ID. You're already part of the group.",
+      );
+      return;
+    }
     if (validMembers.length === 0) {
       toast.error("Add at least one member");
       return;
@@ -65,7 +75,6 @@ export default function CreateGroupModal({ show, onClose, onSuccess }) {
 
     try {
       setLoading(true);
-
       const response = await apiFetch("/group/create", {
         method: "POST",
         body: JSON.stringify({
@@ -177,17 +186,26 @@ export default function CreateGroupModal({ show, onClose, onSuccess }) {
                 type="text"
                 value={member.upi}
                 placeholder="user@upi"
-                onChange={(e) => updateMember(index, "upi", e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  updateMember(index, "upi", value);
+                }}
                 className="border rounded-lg px-3 py-2"
               />
-
-              <input
+              {member.upi.trim().toLowerCase() ===
+                user?.upi?.trim().toLowerCase() && (
+                <p className="text-red-500 text-xs mt-1">
+                  Don't enter your own UPI ID. You're already part of the group.
+                </p>
+              )}
+              {member.upi.trim().toLowerCase() !==
+                user?.upi?.trim().toLowerCase() && <input
                 type="text"
                 value={member.name}
                 placeholder="Nickname"
                 onChange={(e) => updateMember(index, "name", e.target.value)}
                 className="border rounded-lg px-3 py-2"
-              />
+              />}
 
               <button
                 type="button"
