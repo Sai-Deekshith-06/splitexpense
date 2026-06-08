@@ -3,8 +3,9 @@ import { LogOut, Pencil, QrCode } from "lucide-react";
 import UpiQrModal from "./UpiQrModal";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Skeleton } from 'boneyard-js/react'
 
-export default function ProfilePopup({ onClose }) {
+export default function ProfilePopup({ onClose, loading }) {
   const dropdownRef = useRef(null);
   const [showQR, setShowQR] = useState(false);
   const { user, logout } = useAuth();
@@ -40,59 +41,70 @@ export default function ProfilePopup({ onClose }) {
       <h2 className="text-lg font-semibold text-gray-800 mb-4">Profile</h2>
 
       {/* Avatar */}
-      <div className="flex justify-center mb-5 relative">
-        <img
-          src={`https://robohash.org/${user?.name || 'user'}?set=set5`}
-          alt="profile"
-          className="w-24 h-24 rounded-full object-cover border"
-        />
+      <Skeleton name="profile-popup-image" loading={loading}>
+        <div className="flex justify-center mb-5 relative">
+          <img
+            src={`https://robohash.org/${user?.name || 'user'}?set=set5`}
+            alt="profile"
+            className="w-24 h-24 rounded-full object-cover border"
+          />
 
-        <button className="absolute bottom-1 right-22 bg-white border rounded-full p-1 shadow hover:bg-gray-100 transition">
-          <Pencil size={14} className="text-gray-600" />
-        </button>
-      </div>
+          <button className="absolute bottom-1 right-22 bg-white border rounded-full p-1 shadow hover:bg-gray-100 transition">
+            <Pencil size={14} className="text-gray-600" />
+          </button>
+        </div>
+      </Skeleton>
 
       {/* Name */}
-      <div className="mb-4">
-        <label className="text-sm text-gray-500">Name</label>
 
-        <div className="mt-1 flex items-center justify-between border rounded-lg px-3 py-2">
-          <span className="text-gray-700">{user?.name}</span>
+      <Skeleton name="profile-popup-name" loading={loading}>
+        <div className="mb-4">
+          <label className="text-sm text-gray-500">Name</label>
 
-          <button>
-            <Pencil size={16} className="text-gray-500" />
-          </button>
+          <div className="mt-1 flex items-center justify-between border rounded-lg px-3 py-2">
+            <span className="text-gray-700">{user?.name}</span>
+
+            <button>
+              <Pencil size={16} className="text-gray-500" />
+            </button>
+          </div>
         </div>
-      </div>
+      </Skeleton>
 
       {/* Phone */}
-      <div className="mb-4">
-        <label className="text-sm text-gray-500">Phone Number</label>
 
-        <div className="mt-1 flex items-center justify-between border rounded-lg px-3 py-2">
-          <span className="text-gray-700">{user?.phone}</span>
+      <Skeleton name="profile-popup-phone" loading={loading}>
+        <div className="mb-4">
+          <label className="text-sm text-gray-500">Phone Number</label>
 
-          <button>
-            <Pencil size={16} className="text-gray-500" />
-          </button>
+          <div className="mt-1 flex items-center justify-between border rounded-lg px-3 py-2">
+            <span className="text-gray-700">{user?.phone}</span>
+
+            <button>
+              <Pencil size={16} className="text-gray-500" />
+            </button>
+          </div>
         </div>
-      </div>
+      </Skeleton>
 
       {/* UPI */}
-      <div className="mb-4">
-        <label className="text-sm text-gray-500">UPI ID</label>
 
-        <div className="mt-1 flex items-center justify-between border rounded-lg px-3 py-2">
-          <span className="text-gray-700">{user?.upi}</span>
+      <Skeleton name="profile-popup-upi" loading={loading}>
+        <div className="mb-4">
+          <label className="text-sm text-gray-500">UPI ID</label>
 
-          <button
-            onClick={() => setShowQR(!showQR)}
-            className="hover:bg-gray-100 p-1 rounded transition"
-          >
-            <QrCode size={18} className="text-gray-600" />
-          </button>
+          <div className="mt-1 flex items-center justify-between border rounded-lg px-3 py-2">
+            <span className="text-gray-700">{user?.upi}</span>
+
+            <button
+              onClick={() => setShowQR(!showQR)}
+              className="hover:bg-gray-100 p-1 rounded transition"
+            >
+              <QrCode size={18} className="text-gray-600" />
+            </button>
+          </div>
         </div>
-      </div>
+      </Skeleton>
 
       {/* QR */}
       <UpiQrModal show={showQR} onClose={() => setShowQR(false)} upi={user?.upi} />

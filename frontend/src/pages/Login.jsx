@@ -157,6 +157,7 @@ function Login() {
                   className="w-full outline-none ml-4 text-base bg-transparent"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  name="phone"
                 />
               </div>
             </div>
@@ -176,6 +177,7 @@ function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full outline-none ml-4 text-base bg-transparent"
+                  name="password"
                 />
 
                 <button onClick={() => setShowPassword(!showPassword)}>

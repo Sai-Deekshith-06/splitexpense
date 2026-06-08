@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
+import { Skeleton } from 'boneyard-js/react'
 
 export default function SearchableSelect({
     members,
     paidBy,
     setPaidBy,
+    loading
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -109,22 +111,24 @@ export default function SearchableSelect({
 
 
                     {/* Options */}
-                    <div className="max-h-60 overflow-y-auto p-2">
-                        {filteredMembers.map((member) => (
-                            <button
-                                key={member.upi}
-                                type="button"
-                                onClick={() => {
-                                    setPaidBy({ name: member.name, upi: member.upi });
-                                    setOpen(false);
-                                    setSearch("");
-                                }}
-                                className="w-full px-4 py-3 rounded-xl text-left text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700"
-                            >
-                                {member.name}
-                            </button>
-                        ))}
-                    </div>
+                    <Skeleton name="searchable-select-members-list" loading={loading}>
+                        <div className="max-h-60 overflow-y-auto p-2">
+                            {filteredMembers.map((member) => (
+                                <button
+                                    key={member.upi}
+                                    type="button"
+                                    onClick={() => {
+                                        setPaidBy({ name: member.name, upi: member.upi });
+                                        setOpen(false);
+                                        setSearch("");
+                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-left text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700"
+                                >
+                                    {member.name}
+                                </button>
+                            ))}
+                        </div>
+                    </Skeleton>
                 </div>
             )}
         </div>

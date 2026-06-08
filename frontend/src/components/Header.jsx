@@ -3,10 +3,11 @@ import { Bell, ChevronDown, ChevronUp } from "lucide-react";
 import logo from "../assets/logo.png";
 import ProfilePopup from "./ProfilePopup";
 import { useAuth } from "../context/AuthContext";
+import { Skeleton } from 'boneyard-js/react';
+
 const Header = () => {
   const [showProfile, setShowProfile] = useState(false);
-  const { user } = useAuth();
-
+  const { user, loading } = useAuth();
   return (
     <header className="w-full flex items-center justify-between px-6 py-2 bg-white border-b border-gray-200">
       {/* Left Section */}
@@ -39,9 +40,11 @@ const Header = () => {
             />
 
             <div className="hidden sm:block">
-              <p className="text-sm font-semibold text-gray-800">
-                {user?.name}
-              </p>
+              <Skeleton name="header-display-name" loading={loading}>
+                <p className="text-sm font-semibold text-gray-800">
+                  {user?.name}
+                </p>
+              </Skeleton>
             </div>
 
             {showProfile ? (
@@ -53,7 +56,7 @@ const Header = () => {
 
           {/* Popup */}
           {showProfile && (
-            <ProfilePopup onClose={() => setShowProfile(false)} />
+            <ProfilePopup onClose={() => setShowProfile(false)} loading={loading} />
           )}
         </div>
       </div>

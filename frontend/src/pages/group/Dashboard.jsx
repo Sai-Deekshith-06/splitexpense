@@ -7,6 +7,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { apiFetch } from '../../services/api'
 import { toast } from 'sonner'
 import { useAuth } from '../../context/AuthContext'
+import { Skeleton } from 'boneyard-js/react'
+
 function Dashboard() {
     const [splitPanelActive, setSplitPanelActive] = useState(false);
     const { user } = useAuth();
@@ -30,7 +32,6 @@ function Dashboard() {
                     const mems = grp?.members?.map(m => ({ upi: m.upi, name: m.name })) || [];
                     setMembers(mems);
                     console.log(mems);
-                    setLoading(false);
                 } else {
                     toast.error(response.message);
                     navigate("/me");
@@ -39,6 +40,8 @@ function Dashboard() {
                 console.error("Error fetching group data:", error);
                 toast.error("Error fetching group data");
                 navigate("/me");
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -49,24 +52,68 @@ function Dashboard() {
             navigate("/me");
         }
     }, [groupId, user, navigate]);
-    return loading ? (
-        <div className="flex flex-col gap-2 xl:flex-row xl:items-stretch xl:min-h-screen">Loading...</div>
-    ) : (
+    const updateSplitPanelActive = (status) => {
+        setSplitPanelActive(status);
+        if (status) {
+            setTimeout(() => {
+                const element = document.getElementById("add-expense");
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
+            }, 100);
+        }
+    };
+    return (
         <div className="flex flex-col gap-2 xl:flex-row xl:items-stretch xl:min-h-screen">
-            <LeftPanel
-                setSplitPanelActive={setSplitPanelActive}
-                grpname={groupData?.name}
-                grpcode={groupData?.code}
-                members={groupData?.members?.length || 1}
-            />
+            <div className='hidden xl:block'>
+                <LeftPanel
+                    setSplitPanelActive={(status) => {
+                        setSplitPanelActive(status);
+                        if (status)
+                            setTimeout(() => {
+                                const totalAmountEl = document.getElementById("totalAmount");
+                                if (totalAmountEl) {
+                                    totalAmountEl.focus();
+                                }
+                            }, 100);
+                    }}
+                    grpname={groupData?.name}
+                    grpcode={groupData?.code}
+                    members={groupData?.members?.length || 1}
+                    loading={loading}
+                />
+            </div>
+            <div className='xl:hidden'>
+                <LeftPanel
+                    setSplitPanelActive={(status) => {
+                        updateSplitPanelActive(status);
+                        if (status)
+                            setTimeout(() => {
+                                const totalAmountEl = document.getElementById("totalAmount");
+                                if (totalAmountEl) {
+                                    totalAmountEl.focus();
+                                }
+                            }, 100);
+                    }}
+                    grpname={groupData?.name}
+                    grpcode={groupData?.code}
+                    members={groupData?.members?.length || 1}
+                    loading={loading}
+                />
+            </div>
             {!splitPanelActive && <RightPanel
                 grpname={groupData?.name}
                 userData={userData}
+                loading={loading}
             />}
             {splitPanelActive && <SplitExpense
-                setSplitPanelActive={setSplitPanelActive}
+                setSplitPanelActive={updateSplitPanelActive}
                 membersData={members}
                 grpcode={groupData?.code}
+                loading={loading}
             />}
         </div>
     )

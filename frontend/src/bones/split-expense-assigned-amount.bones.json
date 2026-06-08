@@ -1,0 +1,95 @@
+{
+  "breakpoints": {
+    "375": {
+      "name": "split-expense-assigned-amount",
+      "viewportWidth": 16,
+      "width": 16,
+      "height": 20,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          19,
+          8
+        ]
+      ]
+    },
+    "640": {
+      "name": "split-expense-assigned-amount",
+      "viewportWidth": 16,
+      "width": 16,
+      "height": 20,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          19,
+          8
+        ]
+      ]
+    },
+    "768": {
+      "name": "split-expense-assigned-amount",
+      "viewportWidth": 16,
+      "width": 16,
+      "height": 20,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          19,
+          8
+        ]
+      ]
+    },
+    "1024": {
+      "name": "split-expense-assigned-amount",
+      "viewportWidth": 16,
+      "width": 16,
+      "height": 20,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          19,
+          8
+        ]
+      ]
+    },
+    "1280": {
+      "name": "split-expense-assigned-amount",
+      "viewportWidth": 16,
+      "width": 16,
+      "height": 20,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          19,
+          8
+        ]
+      ]
+    },
+    "1536": {
+      "name": "split-expense-assigned-amount",
+      "viewportWidth": 16,
+      "width": 16,
+      "height": 20,
+      "bones": [
+        [
+          0,
+          0,
+          100,
+          19,
+          8
+        ]
+      ]
+    }
+  },
+  "_hash": "3d944c42907be0ddfa21d4b9896257e4"
+}
